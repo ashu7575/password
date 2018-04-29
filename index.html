@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    
+</head>
+
+<body>
+    <canvas id="c" width="500" height="500"></canvas>
+<br>
+<button onclick="getCo();">getCO</button>
+    <script>
+        var canvas = $("#c");
+        var c = canvas[0].getContext("2d");
+
+        var path =
+            "https://static1.squarespace.com/static/56ac276960b5e95342a5e294/t/5a1a12178165f542d68cf818/1511658012902/emojipedia-colbert-emoji-sample.png";
+        var image1 = new DragImage(path, 200, 100);
+        var image2 = new DragImage(path, 300, 100);
+
+        var loop = setInterval(function () {
+
+            c.fillStyle = "gray";
+            c.fillRect(0, 0, 500, 500);
+
+            image1.update();
+            image2.update();
+        }, 30);
+
+        var mouseX = 0,
+            mouseY = 0;
+        var mousePressed = false;
+        var dragging = false;
+        canvas.mousemove(function (e) {
+            mouseX = e.offsetX;
+            mouseY = e.offsetY;
+        })
+
+        $(document).mousedown(function () {
+            mousePressed = true;
+        }).mouseup(function () {
+            mousePressed = false;
+            dragging = false;
+        });
+
+        function DragImage(src, x, y) {
+            var that = this;
+            var startX = 0,
+                startY = 0;
+            var drag = false;
+
+            this.x = x;
+            this.y = y;
+            var img = new Image();
+            img.src = src;
+            this.update = function () {
+                if (mousePressed) {
+                    var left = that.x;
+                    var right = that.x + img.width;
+                    var top = that.y;
+                    var bottom = that.y + img.height;
+                    if (!drag) {
+                        startX = mouseX - that.x;
+                        startY = mouseY - that.y;
+                    }
+                    if (mouseX < right && mouseX > left && mouseY < bottom && mouseY > top) {
+                        if (!dragging) {
+                            dragging = true;
+                            drag = true;
+                        }
+                    }
+                } else {
+                    drag = false;
+                }
+                if (drag) {
+                    that.x = mouseX - startX;
+                    that.y = mouseY - startY;
+                }
+                c.drawImage(img, that.x, that.y);
+            }
+        }
+
+        function getCo(){
+            console.log(image1.x);
+        }
+    </script>
+</body>
+
+</html>
